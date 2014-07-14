@@ -11,6 +11,23 @@ FROM    sys.dm_exec_cached_plans cp
         CROSS APPLY sys.dm_exec_query_plan(cp.plan_handle) qp
 WHERE db_name([st].[dbid]) = DB_NAME()
 
+Statistics are created and updated automatically within the system for all indexes or for any column 
+used as a predicate, as part of a WHERE clause or JOIN ON clause. 
+
+When a Query is Submitted:
+1. Parsing & Errors check
+2. Starts in the  "relational engine" : Based on the statistics - it looks for the best execution plan
+After a minimum allowed time ( depends on the Optimizer's decision ) - The plan is sent (in a binary format) 
+to the storage engine. 
+3. The storage engine is where processes such as locking, index maintenance, and transactions occur. 
+4. The DDL ( CREATE et.c. ) language is not optimized.
+
+Algebrizer:
+Verification & Connection of supplied object names to the existing schemas, objects & the data type's 
+verifications. It includes a hash - stamp & outputs a binary called the query processor tree, which is
+then passed on to the query optimizer. The optimizer uses the hash to determine whether there is already
+a plan generated and stored in the plan cache. If there is a plan there, the process stops here and that
+plan is used. This reduces all the overhead required by the query optimizer to generate a new plan.
 
 -- Clean cache
 DBCC FREEPROCCACHE
