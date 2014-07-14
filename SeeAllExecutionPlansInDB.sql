@@ -29,6 +29,10 @@ then passed on to the query optimizer. The optimizer uses the hash to determine 
 a plan generated and stored in the plan cache. If there is a plan there, the process stops here and that
 plan is used. This reduces all the overhead required by the query optimizer to generate a new plan.
 
+
+Once the optimizer arrives at an execution plan, the estimated plan is created and stored
+in a memory space known as the plan cache 
+
 -- Clean cache
 DBCC FREEPROCCACHE
 DBCC FREEPROCCACHE([query_plan])
