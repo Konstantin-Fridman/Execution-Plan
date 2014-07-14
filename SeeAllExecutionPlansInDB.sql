@@ -22,6 +22,7 @@ to the storage engine.
 3. The storage engine is where processes such as locking, index maintenance, and transactions occur. 
 4. The DDL ( CREATE et.c. ) language is not optimized.
 
+
 Algebrizer:
 Verification & Connection of supplied object names to the existing schemas, objects & the data type's 
 verifications. It includes a hash - stamp & outputs a binary called the query processor tree, which is
@@ -32,6 +33,10 @@ plan is used. This reduces all the overhead required by the query optimizer to g
 
 Once the optimizer arrives at an execution plan, the estimated plan is created and stored
 in a memory space known as the plan cache 
+
+When we submit a query to the server, the algebrizer process creates a hash code( a signature ).
+If a query's signature exists in the "Plan Cache" - it the optimization process is skipped
+and the execution plan in the plan cache is reused.
 
 -- Clean cache
 DBCC FREEPROCCACHE
