@@ -11,6 +11,7 @@ FROM    sys.dm_exec_cached_plans cp
         CROSS APPLY sys.dm_exec_query_plan(cp.plan_handle) qp
 WHERE db_name([st].[dbid]) = DB_NAME()
 
+--------------
 Statistics are created and updated automatically within the system for all indexes or for any column 
 used as a predicate, as part of a WHERE clause or JOIN ON clause. 
 
@@ -30,7 +31,6 @@ then passed on to the query optimizer. The optimizer uses the hash to determine 
 a plan generated and stored in the plan cache. If there is a plan there, the process stops here and that
 plan is used. This reduces all the overhead required by the query optimizer to generate a new plan.
 
-
 Once the optimizer arrives at an execution plan, the estimated plan is created and stored
 in a memory space known as the plan cache 
 
@@ -38,6 +38,18 @@ When we submit a query to the server, the algebrizer process creates a hash code
 If a query's signature exists in the "Plan Cache" - it the optimization process is skipped
 and the execution plan in the plan cache is reused.
 
+--------------
+Cach Clean process: lazywriter
+The lazywriter process, an internal process that works to free all types of cache (including the plan cache),
+periodically scans the objects in the cache and decreases this value by one each time.
+
+Execution plan age = I/O cost * number of referencess ( ex. 5*10 = 55)
+Every LazyWriter loop - this age reduces by "1"
+When the age ==0: the LazyWriter removes it from the PlanCache.
+When is not found a reference to the existing connection: the LazyWriter removes it from the PlanCache.
+When the system needs more memory: the LazyWriter removes it from the PlanCache.
+
+--------------
 -- Clean cache
 DBCC FREEPROCCACHE
 DBCC FREEPROCCACHE([query_plan])
